@@ -13,8 +13,10 @@ public interface IProductoService {
 
     //Creando Producto
     public ResponseEntity<ProductoResponseRest> creandoProducto(Producto producto);
+
     //actualizando Producto
     public ResponseEntity<ProductoResponseRest>actualizarProducto(Producto producto, long id);
+
     //Eliminar ProductO
     public ResponseEntity<ProductoResponseRest>eliminarProducto(Long id);
 

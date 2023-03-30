@@ -11,8 +11,11 @@ public interface IFabricanteService {
     public ResponseEntity<FabricanteResponseRest> buscarFabricanteId(Long id);
     //creando Fabricante
     public ResponseEntity<FabricanteResponseRest> creandoFabricante(Fabricante fabricante);
+
+
     //actualizar datos de Fabricante
     public ResponseEntity<FabricanteResponseRest> actualizarFabricante(Long id, Fabricante fabricante);
+
     //Eliminar Fabricante
     public ResponseEntity<FabricanteResponseRest> eliminarFabricante(Long id);
 

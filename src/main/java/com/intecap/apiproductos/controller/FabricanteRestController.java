@@ -33,7 +33,7 @@ public class FabricanteRestController {
     public ResponseEntity<FabricanteResponseRest> actualizarFabricante(@PathVariable Long id, @RequestBody Fabricante request) {
         return fabricanteService.actualizarFabricante(id, request);
     }
-
+    //Eliminado Fabricante
     @DeleteMapping("/fabricante/{id}")
     public ResponseEntity<FabricanteResponseRest> eliminarFabricante(@PathVariable Long id){
         return fabricanteService.eliminarFabricante(id);

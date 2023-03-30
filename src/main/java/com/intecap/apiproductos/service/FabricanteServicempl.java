@@ -23,7 +23,8 @@ public class FabricanteServicempl implements IFabricanteService {
 
     @Autowired
     private IFabricanteDao fabricanteDao;
-//Listando Fabricnate
+
+    //Listando Fabricnate
     @Override
     @Transactional(readOnly = true)
     public ResponseEntity<FabricanteResponseRest> buscarFabricante() {
@@ -44,7 +45,8 @@ public class FabricanteServicempl implements IFabricanteService {
         }
         return new ResponseEntity<FabricanteResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-//Buscando un Fabricante en Especifico
+
+    //Buscando un Fabricante en Especifico
     @Override
     @Transactional(readOnly = true)
     public ResponseEntity<FabricanteResponseRest> buscarFabricanteId(Long id) {
@@ -69,34 +71,37 @@ public class FabricanteServicempl implements IFabricanteService {
         }
         return new ResponseEntity<FabricanteResponseRest>(response, HttpStatus.OK);
     }
-//Creando un Fabricante
-    @Override
-    @Transactional(readOnly = true)
-    public ResponseEntity<FabricanteResponseRest> creandoFabricante(Fabricante fabricante) {
-        log.info("Iniciando proceso para Crear Fabricante");
-        FabricanteResponseRest response = new FabricanteResponseRest();
-        List<Fabricante> creandoFabricante = new ArrayList<>();
 
-        try {
+    //Creando Fabricante
+    @Override
+    @Transactional
+    public ResponseEntity<FabricanteResponseRest> creandoFabricante(Fabricante fabricante) {
+        log.info("Iniciando el metodo crear");
+        FabricanteResponseRest response = new FabricanteResponseRest();
+        List<Fabricante> list = new ArrayList<>();
+
+        try{
             Fabricante fabricanteGuardado = fabricanteDao.save(fabricante);
-            if (fabricanteGuardado != null) {
-                creandoFabricante.add(fabricanteGuardado);
-                response.getFabricanteResponse().setFabricantes(creandoFabricante);
-            } else {
-                log.severe("Error al Guardar Fabricante");
-                response.setMetadata("Error al guardar el Fabricante", "500", "Error al guardar el Fabricante");
+            if(fabricanteGuardado != null) {
+                list.add(fabricanteGuardado);
+                response.getFabricanteResponse().setFabricantes(list);
+            }else{
+                log.severe("Error al guardar Fabricante");
+                response.setMetadata("Error al guardar Fabricante", "500", "Error al Guardar FABRICANTE");
                 return new ResponseEntity<FabricanteResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
             }
-        } catch (Exception e) {
-            log.severe("Error al Guardar el Fabricante");
+        }catch (Exception e){
+
+            log.severe("Error al guardar Fabricante");
             e.getStackTrace();
-            response.setMetadata("Error al guarar el Fabricante", "500", "Error al Guardar el Fabricante");
+            response.setMetadata("Error al guardar Fabricante", "500", "Error al Guardar FABRICANTE");
             return new ResponseEntity<FabricanteResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
+        response.setMetadata("Respuesta Exitosa", "200", "Fabricante Creado");
         return new ResponseEntity<FabricanteResponseRest>(response, HttpStatus.OK);
     }
-//Actualizando un producto en especifico
+
+    //Actualizando un producto en especifico
     @Override
     @Transactional
     public ResponseEntity<FabricanteResponseRest> actualizarFabricante(Long id, Fabricante fabricante) {
@@ -109,6 +114,8 @@ public class FabricanteServicempl implements IFabricanteService {
             Optional<Fabricante> fabricanteBuscado = fabricanteDao.findById(id);
 
             if (fabricanteBuscado.isPresent()) {
+                //probando si el codigo es que le hace falta
+                fabricanteBuscado.get().setCodigo(fabricante.getCodigo());
                 fabricanteBuscado.get().setNombre(fabricante.getNombre());
                 Fabricante fabricanteActualizado = fabricanteDao.save(fabricanteBuscado.get());
 
@@ -133,33 +140,34 @@ public class FabricanteServicempl implements IFabricanteService {
             return new ResponseEntity<FabricanteResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        response.setMetadata("Respuesta exitosa","200","Fabricante Actualizado");
+        response.setMetadata("Respuesta exitosa", "200", "Fabricante Actualizado");
         return new ResponseEntity<FabricanteResponseRest>(response, HttpStatus.OK);
     }
-//Eliminando un Producto en Especifico
+
+    //Eliminando un Producto en Especifico
     @Override
     public ResponseEntity<FabricanteResponseRest> eliminarFabricante(Long id) {
         log.info("Iniciando el proceso de Elimnar Fabricante");
         FabricanteResponseRest response = new FabricanteResponseRest();
 
-        try{
+        try {
             Optional<Fabricante> fabricanteBuscado = fabricanteDao.findById(id);
 
-            if(fabricanteBuscado.isPresent()){
+            if (fabricanteBuscado.isPresent()) {
                 fabricanteDao.delete(fabricanteBuscado.get());
-            }else{
-            log.severe("No se encontro el fabricante con el id: " +id);
-            response.setMetadata("No se encontro el Fabricante","404","No se encontro el Fabricante con el id: " +id);
-            return new ResponseEntity<FabricanteResponseRest>(response, HttpStatus.NOT_FOUND);
+            } else {
+                log.severe("No se encontro el fabricante con el id: " + id);
+                response.setMetadata("No se encontro el Fabricante", "404", "No se encontro el Fabricante con el id: " + id);
+                return new ResponseEntity<FabricanteResponseRest>(response, HttpStatus.NOT_FOUND);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             log.severe("Error al eliminar el libro" + e.getMessage());
             e.getStackTrace();
             response.setMetadata("Error al elimnar el fabricante", "500", "Error al eliminar el fabricante");
         }
 
-        response.setMetadata("Respuesta exitosa", "200","Fabricante Eliminado");
-        return  new ResponseEntity<FabricanteResponseRest>(response, HttpStatus.OK);
+        response.setMetadata("Respuesta exitosa", "200", "Fabricante Eliminado");
+        return new ResponseEntity<FabricanteResponseRest>(response, HttpStatus.OK);
     }
 
 }

@@ -30,12 +30,11 @@ public class ProductoRestController {
         return productoService.creandoProducto(request);
     }
     //Actualizando Producto
-
     @PutMapping("/productos/{id}")
     public ResponseEntity<ProductoResponseRest>actualizarProducto(@RequestBody Producto request, @PathVariable Long id){
         return productoService.actualizarProducto(request, id);
     }
-
+    //Elimiando Producto
     @DeleteMapping("/productos/{id}")
     public ResponseEntity<ProductoResponseRest>eliminarProducto(@PathVariable Long id){
         return productoService.eliminarProducto(id);

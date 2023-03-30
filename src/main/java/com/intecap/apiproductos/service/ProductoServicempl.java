@@ -72,32 +72,35 @@ public class ProductoServicempl implements IProductoService {
 
     }
 
+    //Creando Producto
     @Override
-    @Transactional(readOnly = true)
     public ResponseEntity<ProductoResponseRest> creandoProducto(Producto producto) {
-        log.info("Iniciando proceso para Crear Producto");
+        log.info("Iniciando el metodo crear Producto");
         ProductoResponseRest response = new ProductoResponseRest();
-        List<Producto> creandoProducto = new ArrayList<>();
+        List<Producto> list = new ArrayList<>();
 
         try {
             Producto productoGuardado = productoDao.save(producto);
             if (productoGuardado != null) {
-                creandoProducto.add(productoGuardado);
-                response.getProductoResponse().setProductos(creandoProducto);
+                list.add(productoGuardado);
+                response.getProductoResponse().setProductos(list);
+
             } else {
-                log.severe("Error al Guardar Producto");
-                response.setMetadata("Error al guardar el Producto", "500", "Error al guardar el Fabricante");
+                log.severe("Error al guardar Producto");
+                response.setMetadata("Error al guardar Producto", "500", "Error al Guardar PRODUCTO");
                 return new ResponseEntity<ProductoResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } catch (Exception e) {
-            log.severe("Error al Guardar el Producto");
+            log.severe("Error al guardar Producto");
             e.getStackTrace();
-            response.setMetadata("Error al guarar el Producto", "500", "Error al Guardar el Fabricante");
+            response.setMetadata("Error al guardar Producto", "500", "Error al Guardar FABRICANTE");
             return new ResponseEntity<ProductoResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        response.setMetadata("Repuesta Exitosa", "200", "Producto Creado");
         return new ResponseEntity<ProductoResponseRest>(response, HttpStatus.OK);
     }
 
+    //Actualizando Producto
     @Override
     @Transactional
     public ResponseEntity<ProductoResponseRest> actualizarProducto(Producto producto, long id) {
@@ -108,7 +111,7 @@ public class ProductoServicempl implements IProductoService {
 
         try {
             Optional<Producto> productoBuscado = productoDao.findById(id);
-            if (productoBuscado.isPresent()){
+            if (productoBuscado.isPresent()) {
                 //actualizacion de los campos de la tabla producto
                 productoBuscado.get().setNombre(producto.getNombre());
                 productoBuscado.get().setPrecio(producto.getPrecio());
@@ -117,21 +120,21 @@ public class ProductoServicempl implements IProductoService {
 
                 Producto productoActualizado = productoDao.save(productoBuscado.get());
 
-                if (productoActualizado!=null){
+                if (productoActualizado != null) {
                     listProducto.add(productoActualizado);
                     response.getProductoResponse().setProductos(listProducto);
-                }else {
+                } else {
                     log.severe("Error al actualizar el Producto");
-                    response.setMetadata("Error al Actualizar el Producto","500", "Erro al Actualizar el Producto");
+                    response.setMetadata("Error al Actualizar el Producto", "500", "Erro al Actualizar el Producto");
                     return new ResponseEntity<ProductoResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
                 }
 
-            }else{
-                    log.severe("No se encontro el Producto con el id: " +id);
-                    response.setMetadata("No se encontro el Producto","404", "No se encontro el Producto para Actualizarlo");
+            } else {
+                log.severe("No se encontro el Producto con el id: " + id);
+                response.setMetadata("No se encontro el Producto", "404", "No se encontro el Producto para Actualizarlo");
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             log.severe("Error al actualizar el Producto. " + e.getMessage());
             e.getStackTrace();
             response.setMetadata("Error al Actualizar el Producto", "500", "Error al Actualizar el Producto");
@@ -140,7 +143,7 @@ public class ProductoServicempl implements IProductoService {
         return new ResponseEntity<ProductoResponseRest>(response, HttpStatus.OK);
     }
 
-
+    //Elimiando Producto
     @Override
     public ResponseEntity<ProductoResponseRest> eliminarProducto(Long id) {
         log.info("Iniciando el proceso de Eliminar el Producto");
@@ -148,15 +151,15 @@ public class ProductoServicempl implements IProductoService {
 
         try {
             Optional<Producto> fabricanteEliminado = productoDao.findById(id);
-            if (fabricanteEliminado.isPresent()){
+            if (fabricanteEliminado.isPresent()) {
                 productoDao.delete(fabricanteEliminado.get());
-            }else{
-                log.severe("No se encontro el Producto con el id: "  + id);
-                response.setMetadata("No se encontrop el Producto", "404", "No se encontro el Producto con el id "+id);
+            } else {
+                log.severe("No se encontro el Producto con el id: " + id);
+                response.setMetadata("No se encontrop el Producto", "404", "No se encontro el Producto con el id " + id);
                 return new ResponseEntity<ProductoResponseRest>(response, HttpStatus.NOT_FOUND);
             }
-        }catch (Exception e){
-            log.severe("Error al eliminar el Producto"+e.getMessage());
+        } catch (Exception e) {
+            log.severe("Error al eliminar el Producto" + e.getMessage());
             e.getStackTrace();
             response.setMetadata("Error al eliminar el Producto", "500", "Error al eliminar el Producto");
 
